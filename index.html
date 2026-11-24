@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+          colors: {
+            lab: {
+              bg: '#FFFFFF',
+              surface: '#F8FAFC',
+              grid: '#E5E7EB',
+              ink: '#0F172A',
+              muted: '#475569',
+              dim: '#94A3B8',
+              kimwipe: '#009E60',
+              kimwipeDark: '#007A4A',
+              kimwipeSoft: '#ECFDF5',
+              yellow: '#FACC15',
+              yellowDeep: '#EAB308',
+              yellowText: '#854D0E',
+              yellowSoft: '#FEFCE8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --surface-slate: #F8FAFC;
+      --border-hairline: #E5E7EB;
+      --kimwipe-green: #009E60;
+      --lab-yellow: #FACC15;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background-color: var(--bg-white);
+      color: #0F172A;
+    }
+
+    body {
+      background-color: var(--bg-white);
+      color: #0F172A;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* Minimal architectural 1px grid on pure white */
+      background-image:
+        linear-gradient(to right, rgba(229, 231, 235, 0.55) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(229, 231, 235, 0.55) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    /* Clean white laboratory card with 1px hairline border */
+    .lab-card {
+      background-color: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #E5E7EB;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .lab-card:hover {
+      border-color: #009E60;
+      box-shadow: 0 12px 32px -14px rgba(15, 23, 42, 0.08);
+    }
+
+    .portfolio-section {
+      scroll-margin-top: 5.5rem;
+    }
+
+    .portfolio-section.is-current .section-marker {
+      background-color: #FACC15;
+      color: #0F172A;
+      border-color: #EAB308;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFFFF;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #009E60;
+    }
+  </style>
+</head>
+<body class="selection:bg-lab-yellow/70 selection:text-lab-ink">
+
+  <!-- =====================================================================
+       FIXED LEFT-SIDE KEKULE BENZENE RING
+       Regular hexagon outer skeleton (#009E60, stroke-width 2.6) +
+       3 alternating inner parallel double-bond lines (#009E60, stroke-width 2.2).
+       Zero circles, zero outer rings, zero vertex shapes, dots, or text labels.
+       ===================================================================== -->
+  <div class="fixed inset-y-0 left-0 z-0 overflow-hidden select-none pointer-events-none w-full" aria-hidden="true">
+    <svg
+      id="kekule-svg"
+      viewBox="0 0 1400 1400"
+      preserveAspectRatio="xMinYMid slice"
+      class="h-full w-auto max-w-none -ml-[630px] sm:-ml-[520px] lg:-ml-[430px]"
+    >
+      <g id="benzene-rotor" transform="rotate(0, 700, 700)">
+        <!-- Outer Regular Hexagon Skeleton (R = 560, center = 700, 700) -->
+        <polygon
+          points="1260,700 980,1184.97 420,1184.97 140,700 420,215.03 980,215.03"
+          fill="none"
+          stroke="#009E60"
+          stroke-width="2.6"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+
+        <!-- 3 Alternating Inner Parallel Double-Bond Lines -->
+        <line
+          x1="1213.22"
+          y1="733.03"
+          x2="985.22"
+          y2="1127.94"
+          stroke="#009E60"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        />
+        <line
+          x1="414.78"
+          y1="1127.94"
+          x2="186.78"
+          y2="733.03"
+          stroke="#009E60"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        />
+        <line
+          x1="472.00"
+          y1="239.03"
+          x2="928.00"
+          y2="239.03"
+          stroke="#009E60"
+          stroke-width="2.2"
+          stroke-linecap="round"
+        />
+      </g>
+    </svg>
+  </div>
+
+  <!-- =====================================================================
+       FIXED TOP NAVIGATION HEADER
+       ===================================================================== -->
+  <header class="fixed top-0 inset-x-0 z-40 h-14 border-b border-[#E5E7EB] bg-white/95 backdrop-blur-md">
+    <!-- Kimwipe Green & Lab Yellow Calibration Hairline -->
+    <div class="h-[2px] w-full flex">
+      <div class="w-3/4 bg-lab-kimwipe"></div>
+      <div class="w-1/4 bg-lab-yellow"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-[calc(100%-2px)] flex items-center justify-between gap-2">
+      <!-- Brand Identity -->
+      <a
+        href="#sec-profile"
+        class="group inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-lab-ink shrink-0"
+      >
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-lab-kimwipe text-white text-sm leading-none font-bold">⌬</span>
+        <span class="font-bold tracking-tight">Harry</span>
+      </a>
+
+      <!-- 6-Section Navigation Links + Subtle GitHub Link -->
+      <div class="flex items-center gap-1 sm:gap-2 font-mono text-[11px]">
+        <nav aria-label="Section Navigation" class="flex items-center gap-0.5 sm:gap-1">
+          <a href="#sec-profile" data-nav="0" class="top-pill px-2 py-1 rounded-md border border-lab-kimwipe bg-lab-kimwipeSoft text-lab-ink font-semibold transition-colors">
+            <span class="text-lab-kimwipe">01</span><span class="hidden xl:inline ml-1.5">PROFILE</span>
+          </a>
+          <a href="#sec-philosophy" data-nav="1" class="top-pill px-2 py-1 rounded-md border border-transparent text-lab-muted hover:text-lab-kimwipe transition-colors">
+            <span>02</span><span class="hidden xl:inline ml-1.5">PHILOSOPHY</span>
+          </a>
+          <a href="#sec-projects" data-nav="2" class="top-pill px-2 py-1 rounded-md border border-transparent text-lab-muted hover:text-lab-kimwipe transition-colors">
+            <span>03</span><span class="hidden xl:inline ml-1.5">PROJECTS</span>
+          </a>
+          <a href="#sec-hackathons" data-nav="3" class="top-pill px-2 py-1 rounded-md border border-transparent text-lab-muted hover:text-lab-kimwipe transition-colors">
+            <span>04</span><span class="hidden xl:inline ml-1.5">HACKATHONS</span>
+          </a>
+          <a href="#sec-stack" data-nav="4" class="top-pill px-2 py-1 rounded-md border border-transparent text-lab-muted hover:text-lab-kimwipe transition-colors">
+            <span>05</span><span class="hidden xl:inline ml-1.5">STACK</span>
+          </a>
+          <a href="#sec-roadmap" data-nav="5" class="top-pill px-2 py-1 rounded-md border border-transparent text-lab-muted hover:text-lab-kimwipe transition-colors">
+            <span>06</span><span class="hidden xl:inline ml-1.5">ROADMAP</span>
+          </a>
+        </nav>
+
+        <span class="h-3.5 w-[1px] bg-[#E5E7EB] hidden sm:inline-block"></span>
+
+        <a
+          href="https://github.com/gabehayapan"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#E5E7EB] bg-lab-surface hover:border-lab-kimwipe hover:text-lab-kimwipe text-lab-muted font-medium transition-colors shrink-0"
+          aria-label="GitHub Profile"
+        >
+          <span>GitHub</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       MAIN PORTFOLIO CONTENT (Offset right to frame the rotating Kekulé ring)
+       ===================================================================== -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 pt-24 pb-28">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Left 4 Columns: Viewport Breathing Room for Left-Edge Kekulé Ring -->
+      <div class="hidden lg:block lg:col-span-4"></div>
+
+      <!-- Right 8 Columns: 6 Vertical Sections (01 - 06) -->
+      <div class="lg:col-span-8 pl-12 sm:pl-24 lg:pl-6 space-y-20 sm:space-y-24">
+
+    <!-- =================================================================
+          01 / PROFILE
+          ================================================================= -->
+          <section id="sec-profile" data-section="0" class="portfolio-section is-current">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">01 / PROFILE</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-lab-yellowDeep/60 bg-lab-yellow text-lab-ink font-semibold">
+              01
+            </span>
+          </div>
+
+          <div class="lab-card rounded-xl p-6 sm:p-8 relative overflow-hidden">
+            <div class="flex flex-wrap items-baseline gap-3">
+              <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-lab-ink leading-[1.15]">
+                Harry
+              </h1>
+            </div>
+
+            <p class="text-xs sm:text-sm text-lab-muted leading-[1.85] mt-5 max-w-2xl">
+              I'm passionate about low-level programming and enjoy exploring how systems work from the ground up.
+            </p>
+            <p class="text-xs sm:text-sm text-lab-muted leading-[1.85] mt-4 max-w-2xl">
+              In my free time, I like learning about these areas while casually experimenting with reinforcement learning models and computational chemistry simulations. I prefer to take things at my own pace, enjoy the process of building and learning, and explore whatever sparks my curiosity.
+            </p>
+          </div>
+        </section>
+
+        <!-- =================================================================
+              02 / PHILOSOPHY
+             ================================================================= -->
+        <section id="sec-philosophy" data-section="1" class="portfolio-section">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">02 / PHILOSOPHY</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-[#E5E7EB] bg-white text-lab-muted font-semibold">
+              02
+            </span>
+          </div>
+
+          <div class="lab-card rounded-xl p-6 sm:p-8">
+            <ul class="divide-y divide-dashed divide-[#E5E7EB] text-xs sm:text-sm leading-relaxed">
+              <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                <span class="font-mono text-[11px] font-bold text-lab-kimwipe bg-lab-kimwipeSoft border border-lab-kimwipe/30 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
+                  01
+                </span>
+                <p class="text-lab-muted">
+                  <strong class="text-lab-ink font-semibold">Look under the hood</strong> — Reimplement core primitives from scratch instead of relying blindly on black-box abstractions.
+                </p>
+              </li>
+
+              <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                <span class="font-mono text-[11px] font-bold text-lab-ink bg-lab-yellow border border-lab-yellowDeep/60 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
+                  02
+                </span>
+                <p class="text-lab-muted">
+                  <strong class="text-lab-ink font-semibold">Experiment to learn</strong> — Start from genuine curiosity, build small testable prototypes, and observe where they break.
+                </p>
+              </li>
+
+              <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                <span class="font-mono text-[11px] font-bold text-lab-kimwipe bg-lab-kimwipeSoft border border-lab-kimwipe/30 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
+                  03
+                </span>
+                <p class="text-lab-muted">
+                  <strong class="text-lab-ink font-semibold">Think before coding</strong> — Write clear specs first so tools and AI amplify intent rather than create noise.
+                </p>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             03 / CURRENT PROJECTS
+             ================================================================= -->
+        <section id="sec-projects" data-section="2" class="portfolio-section">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">03 / CURRENT PROJECTS</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-[#E5E7EB] bg-white text-lab-muted font-semibold">
+              03
+            </span>
+          </div>
+
+          <div class="space-y-4">
+          <!-- Project 01: Chemical Simulation -->
+          <article class="lab-card rounded-xl p-6 relative overflow-hidden">
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+              <div>
+                <div class="font-mono text-[11px] text-lab-kimwipe font-bold mb-1">PRJ-01 // MATERIAL COMPUTING</div>
+                <h3 class="text-lg sm:text-xl font-bold text-lab-ink">
+                  Chemical Simulation
+                </h3>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+              Started building a chemical simulation project with the long-term goal of creating a CPU out of chemical substances. Currently implementing core features in Python—such as reaction calculations and screening suitable candidate compounds—with plans to optimize performance-critical parts in C/C++ as needed.            </p>
+            <div class="flex flex-wrap items-center justify-end gap-2 pt-3 font-mono text-[11px]">
+              <a
+                href="https://github.com/gabehayapan/0X-H3M_L4B"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+              >
+                <span>GitHub</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             04 / HACKATHONS & COMPETITIONS (Reverse Chronological: Newest -> Oldest)
+             ================================================================= -->
+        <section id="sec-hackathons" data-section="3" class="portfolio-section">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">04 / HACKATHONS &amp; COMPETITIONS</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-[#E5E7EB] bg-white text-lab-muted font-semibold">
+              04
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <!-- 1. DevFest Japan Hackathon 2026 (Oct 2026) -->
+            <article class="lab-card rounded-xl p-6">
+              <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                <div>
+                  <div class="font-mono text-[11px] text-lab-kimwipe font-bold">OCT 2026 // CLOUD &amp; AI PRODUCTIVITY</div>
+                  <h3 class="text-base sm:text-lg font-bold text-lab-ink">
+                    DevFest Japan Hackathon 2026
+                  </h3>
+                </div>
+                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-md bg-lab-kimwipe text-white font-bold">
+                  NOV 2026
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+                Built <strong>Lumo</strong>, a desktop-resident AI productivity agent running on Google Cloud Run. Integrated live browser activity telemetry via Chrome Extensions with reflective journaling prompts to interrupt unproductive scrolling loops.
+              </p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-3 font-mono text-[11px]">
+                <div class="flex flex-wrap gap-1.5">
+                </div>
+                <a
+                  href="https://github.com/teikaiyu/goo-gaa-project"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+                >
+                  <span>GitHub</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+
+            <!-- ISUCON (Web Performance Tuning Competition) -->
+            <article class="lab-card rounded-xl p-6">
+              <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                <div>
+                  <div class="font-mono text-[11px] text-lab-kimwipe font-bold">2026 // WEB PERFORMANCE &amp; BOTTLENECK ANALYSIS</div>
+                  <h3 class="text-base sm:text-lg font-bold text-lab-ink">
+                    ISUCON 2026
+                  </h3>
+                </div>
+                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-md bg-lab-kimwipeSoft text-lab-kimwipe border border-lab-kimwipe/30 font-bold">
+                  OCT 2026
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+                Competed in a web application speed-tuning contest, iteratively tracking down and resolving performance bottlenecks by inspecting Nginx access logs, slow SQL logs, application source code, and system-level CPU, memory, and I/O profiles.              </p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-3 font-mono text-[11px]">
+                <div class="flex flex-wrap gap-1.5">
+                </div>
+                <a
+                  href="https://github.com/gabehayapan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+                >
+                </a>
+              </div>
+            </article>
+
+            <!-- 3. SMART SCAPE CUP Hackathon Battle 2026 (2026) -->
+            <article class="lab-card rounded-xl p-6 border-lab-yellowDeep/80">
+              <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                <div>
+                  <div class="font-mono text-[11px] text-lab-kimwipe font-bold">2026 // SPATIAL COMPUTING &amp; FULL-STACK</div>
+                  <h3 class="text-base sm:text-lg font-bold text-lab-ink">
+                    SMART SCAPE CUP Hackathon Battle 2026
+                  </h3>
+                </div>
+                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-md bg-lab-yellow border border-lab-yellowDeep text-lab-ink font-bold">
+                  MAY 2026
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+                Built a Blokus Duo game-playing algorithm from scratch in a week. Initially struggled with move calculations exceeding the strict per-turn time limit, but identified object instantiation as the main bottleneck and optimized it to meet the deadline. Won a <strong>Special Award</strong> for an adaptive strategy that dynamically switches between multiple algorithms based on match performance.              </p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-3 font-mono text-[11px]">
+                <div class="flex flex-wrap gap-1.5">
+                </div>
+                <a
+                  href="https://github.com/Shigure-st/SmartScape_hackathon_2026"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+                >
+                  <span>GitHub</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+
+            <!-- 5. Autonomous Driving Mini-Car Battle at Tokyo Innovation Base (Nov 2025) -->
+            <article class="lab-card rounded-xl p-6">
+              <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                <div>
+                  <div class="font-mono text-[11px] text-lab-kimwipe font-bold">NOV 2025 // AUTONOMOUS DRIVING CAR</div>
+                  <h3 class="text-base sm:text-lg font-bold text-lab-ink">
+                    Autonomous Driving Mini-Car Race
+                  </h3>
+                </div>
+                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-bold">
+                  NOV 2025
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+                Built the vehicle from scratch by modifying an RC car rather than just writing control software—producing the lowest-cost build among all competing teams and advancing to the <strong>finals</strong>. Tuned the navigation logic to handle noisy ultrasonic sensor readings and steer cleanly without hitting walls.              </p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-3 font-mono text-[11px]">
+                <div class="flex flex-wrap gap-1.5">
+                </div>
+                <a
+                  href="https://github.com/gabehayapan/minicar_code"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+                >
+                  <span>GitHub</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+
+            <!-- 4. 24-Hour Hackathon hosted by SonicGarden -->
+            <article class="lab-card rounded-xl p-6">
+              <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                <div>
+                  <div class="font-mono text-[11px] text-lab-kimwipe font-bold">24H SPRINT // THEME: 3-MINUTE CUP RAMEN WAIT</div>
+                  <h3 class="text-base sm:text-lg font-bold text-lab-ink">
+                    24-Hour Hackathon
+                  </h3>
+                </div>
+                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-bold">
+                  OCT 2025
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-lab-muted leading-relaxed mb-4">
+                Built <strong>TERMINAL01:42</strong>, a terminal-based visual novel about the late-night inner conflict of eating cup ramen, created within 24 hours around the theme <em>"Something you can do while waiting 3 minutes for cup ramen."</em> Structured the branching narrative in JSON and wrote a Python engine to parse and run it—my very first completed software project.              </p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-3 font-mono text-[11px]">
+                <div class="flex flex-wrap gap-1.5">
+                </div>
+                <a
+                  href="https://github.com/gabehayapan/TERMINAL0142"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-lab-kimwipe hover:underline font-semibold"
+                >
+                  <span>GitHub</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             05 / TECH STACK
+             ================================================================= -->
+        <section id="sec-stack" data-section="4" class="portfolio-section">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">05 / TECH STACK</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-[#E5E7EB] bg-white text-lab-muted font-semibold">
+              05
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4">
+            <!-- Systems & Low-Level -->
+            <div class="lab-card rounded-xl p-5 sm:p-6">
+              <div class="flex items-center justify-between font-mono text-xs mb-3.5">
+                <span class="font-bold text-lab-kimwipe">05.A // Programming Languages</span>
+                <span class="w-2 h-2 rounded-full bg-lab-kimwipe"></span>
+              </div>
+              <div class="flex flex-wrap gap-2 font-mono text-xs">
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">C</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">C++</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Python</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Go</span>
+              </div>
+            </div>
+
+            <!-- Backend & Cloud Security -->
+            <div class="lab-card rounded-xl p-5 sm:p-6">
+              <div class="flex items-center justify-between font-mono text-xs mb-3.5">
+                <span class="font-bold text-lab-kimwipe">05.B // Cloud &amp; Infrastructure</span>
+                <span class="w-2 h-2 rounded-full bg-lab-yellowDeep"></span>
+              </div>
+              <div class="flex flex-wrap gap-2 font-mono text-xs">
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Google Cloud</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Docker</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Vagrant</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Linux</span>
+                <span class="px-3 py-1 rounded-md bg-lab-surface border border-[#E5E7EB] text-lab-ink font-medium">Git/Github</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             06 / ROADMAP
+             ================================================================= -->
+          <section id="sec-roadmap" data-section="5" class="portfolio-section">
+          <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-3 mb-6 font-mono text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lab-kimwipe text-base font-bold">⌬</span>
+              <h2 class="text-base sm:text-lg font-bold text-lab-ink tracking-tight">06 / ROADMAP</h2>
+            </div>
+            <span class="section-marker px-2.5 py-0.5 rounded-md border border-[#E5E7EB] bg-white text-lab-muted font-semibold">
+              06
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="lab-card rounded-xl p-6 sm:p-8">
+              <p class="text-xs sm:text-sm text-lab-muted leading-[1.85] mb-6 max-w-2xl">
+                I want to keep exploring how systems work at my own pace—following curiosity from low-level OS internals to small experiments in simulation and hardware.
+              </p>
+
+              <ul class="divide-y divide-dashed divide-[#E5E7EB] text-xs sm:text-sm leading-relaxed">
+                <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                  <span class="font-mono text-[11px] font-bold text-lab-kimwipe bg-lab-kimwipeSoft border border-lab-kimwipe/30 px-2 py-0.5 rounded shrink-0 mt-0.5">
+                    OS / SYS
+                  </span>
+                  <p class="text-lab-muted">
+                    <strong class="text-lab-ink font-semibold">Explore OS internals from the ground up</strong> — Continue experimenting with kernel mechanics and memory management.
+                  </p>
+                </li>
+
+                <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                  <span class="font-mono text-[11px] font-bold text-lab-ink bg-lab-yellow border border-lab-yellowDeep/60 px-2 py-0.5 rounded shrink-0 mt-0.5">
+                    SIM / RL
+                  </span>
+                  <p class="text-lab-muted">
+                    <strong class="text-lab-ink font-semibold">Keep tinkering with simulations &amp; RL</strong> — Casually test ideas in reinforcement learning and computational chemistry models just to see what emerges.
+                  </p>
+                </li>
+
+                <li class="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3.5">
+                  <span class="font-mono text-[11px] font-bold text-lab-kimwipe bg-lab-kimwipeSoft border border-lab-kimwipe/30 px-2 py-0.5 rounded shrink-0 mt-0.5">
+                    GLOBAL
+                  </span>
+                  <p class="text-lab-muted">
+                    <strong class="text-lab-ink font-semibold">Build and work across borders</strong> — Building things alongside international teams and eventually taking my engineering work overseas.
+                  </p>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Minimal Footer Bar -->
+            <footer class="pt-4 flex flex-wrap items-center justify-between gap-3 font-mono text-xs text-lab-dim">
+              <div class="flex items-center gap-2">
+                <span class="text-lab-kimwipe font-bold">⌬</span>
+                <span>Harry (@gabehayapan)</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <a href="#sec-profile" class="text-lab-kimwipe hover:underline font-semibold">
+                  ↑ TOP
+                </a>
+              </div>
+            </footer>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const SECTION_COUNT = 6;
+      const rotor = document.getElementById('benzene-rotor');
+      const sections = Array.from(document.querySelectorAll('.portfolio-section'));
+      const topPills = Array.from(document.querySelectorAll('.top-pill'));
+
+      let targetStep = 0;
+      let currentAngle = 0;
+      let activeSector = 0;
+
+      // Map vertical scroll progress continuously across the 6 sections [0..5]
+      function computeContinuousSectionStep() {
+        if (sections.length === 0) return 0;
+        const viewportFocusY = window.scrollY + window.innerHeight * 0.42;
+        const centers = sections.map((sec) => {
+          const rect = sec.getBoundingClientRect();
+          return window.scrollY + rect.top + rect.height * 0.35;
+        });
+
+        if (window.scrollY <= 12) return 0;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (maxScroll > 0 && window.scrollY >= maxScroll - 16) {
+          return SECTION_COUNT - 1;
+        }
+
+        if (viewportFocusY <= centers[0]) return 0;
+        if (viewportFocusY >= centers[centers.length - 1]) return SECTION_COUNT - 1;
+
+        for (let i = 0; i < centers.length - 1; i++) {
+          if (viewportFocusY >= centers[i] && viewportFocusY <= centers[i + 1]) {
+            const span = Math.max(1, centers[i + 1] - centers[i]);
+            return i + (viewportFocusY - centers[i]) / span;
+          }
+        }
+        return 0;
+      }
+
+      function updateScrollTarget() {
+        targetStep = computeContinuousSectionStep();
+      }
+
+      window.addEventListener('scroll', updateScrollTarget, { passive: true });
+      window.addEventListener('resize', updateScrollTarget, { passive: true });
+      updateScrollTarget();
+
+      // Highlight active section and top navigation pill
+      function setActiveSector(nextIdx) {
+        if (nextIdx === activeSector && setActiveSector.initialized) return;
+        setActiveSector.initialized = true;
+        activeSector = nextIdx;
+
+        sections.forEach((sec, i) => {
+          sec.classList.toggle('is-current', i === activeSector);
+        });
+
+        topPills.forEach((pill, i) => {
+          const numSpan = pill.querySelector('span:first-child');
+          if (i === activeSector) {
+            pill.classList.add('border-lab-kimwipe', 'bg-lab-kimwipeSoft', 'text-lab-ink', 'font-semibold');
+            pill.classList.remove('border-transparent', 'text-lab-muted');
+            numSpan.classList.add('text-lab-kimwipe');
+          } else {
+            pill.classList.remove('border-lab-kimwipe', 'bg-lab-kimwipeSoft', 'text-lab-ink', 'font-semibold');
+            pill.classList.add('border-transparent', 'text-lab-muted');
+            numSpan.classList.remove('text-lab-kimwipe');
+          }
+        });
+      }
+
+      setActiveSector(0);
+
+      // Smooth 60fps SVG rotation synchronized with scroll progress
+      function renderLoop() {
+        const desiredAngle = -targetStep * 60;
+        currentAngle += (desiredAngle - currentAngle) * 0.12;
+
+        if (rotor) {
+          rotor.setAttribute('transform', 'rotate(' + currentAngle.toFixed(3) + ', 700, 700)');
+        }
+
+        const absDeg = Math.abs(currentAngle);
+        const nearestSector = Math.min(SECTION_COUNT - 1, Math.max(0, Math.round(absDeg / 60)));
+        setActiveSector(nearestSector);
+
+        window.requestAnimationFrame(renderLoop);
+      }
+
+      window.requestAnimationFrame(renderLoop);
+    });
+  </script>
+</body>
+</html>
